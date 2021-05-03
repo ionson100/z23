@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,6 +10,7 @@ namespace z23
 {
     class Program
     {
+        private static bool block;
         static StringBuilder bodybuilder = new StringBuilder();
         private static Stack<MyMeny> stack = new Stack<MyMeny>();
 
@@ -21,6 +23,7 @@ namespace z23
             {
                 char c = (char)sr.Read();
                 bodybuilder.Append(c);
+               
                 if (c == '<')
                 {
                     word.Clear();
@@ -44,6 +47,7 @@ namespace z23
                         stack.First().BodyBuilder.Append(c);
                     }
                 }
+               
 
                 switch (c)
                 {
@@ -67,16 +71,27 @@ namespace z23
                                     int y = m.ATributesBuilder.Length;
                                     bodybuilder.Remove(bodybuilder.Length - y, y);
                                     m.ATributesBuilder.Remove(y - 1, 1);
-                                    bodybuilder.Append("menu***menu");
+                                    switch (m.TypeTag)
+                                    {
+                                        case TypeTag.None:
+                                            break;
+                                        case TypeTag.Menu:
+                                            bodybuilder.Append("menu***menu");
+                                            break;
+                                        case TypeTag.Code:
+                                            bodybuilder.Append("code***code");
+                                            break;
+                                        default:
+                                            throw new ArgumentOutOfRangeException();
+                                    }
+                                   
 
                                 }
                                 else
                                 {
                                     string dd = word.ToString();
-                                    if (word.CompareWord("</menu>".ToCharArray()))
+                                    if (word.CompareWord("</menu>".ToCharArray()) && block==false) 
                                     {
-
-
                                         bodybuilder.Remove(bodybuilder.Length - m.BodyBuilder.Length, m.BodyBuilder.Length);
                                         string cc = bodybuilder.ToString();
                                         m.BodyBuilder.Remove(m.BodyBuilder.Length - word.Length, word.Length);
@@ -84,15 +99,20 @@ namespace z23
                                         bodybuilder.Append(Environment.NewLine).Append("<diw>");
                                         bodybuilder.Append(m.BodyBuilder).Append("</div>");
                                         stack.Pop();
-
-
+                                    }
+                                    if (word.CompareWord("</codes>".ToCharArray()))
+                                    {
+                                        bodybuilder.Remove(bodybuilder.Length - "</codes>".Length, "</codes>".Length);
+                                        bodybuilder.Append("**finishCode***");
+                                        stack.Pop();
+                                        block = false;
                                     }
                                 }
 
                                 break;
                             }
 
-                            if (bodybuilder[bodybuilder.Length - 1] != '/')
+                            if (bodybuilder[bodybuilder.Length - 1] == '/')
                             {
                                 m.IsOpenTopTag = false;
                                 m.isOpenBody = true;
@@ -138,9 +158,10 @@ namespace z23
             {
                 return;
             }
-            if (word.CompareWord("<menu".ToCharArray()))
+            if (word.CompareWord("<menu".ToCharArray()) && block == false)
             {
                 MyMeny meny = new MyMeny();
+                meny.TypeTag = TypeTag.Menu;
                 meny.IsOpenTopTag = true;
                 //meny.ATributesBuilder.Append(" <menu ");
                 stack.Push(meny);
@@ -149,6 +170,22 @@ namespace z23
                 bodybuilder.Remove(r - y, y);
                 word.Clear();
             }
+
+            if (word.CompareWord("<codes".ToCharArray()))
+            {
+              
+                MyMeny meny = new MyMeny();
+                meny.TypeTag = TypeTag.Code;
+                meny.IsOpenTopTag = true;
+                //meny.ATributesBuilder.Append(" <menu ");
+                stack.Push(meny);
+                int r = bodybuilder.Length;
+                int y = word.Length;
+                bodybuilder.Remove(r - y, y);
+                word.Clear(); 
+                block = true;
+            }
+            
 
 
 

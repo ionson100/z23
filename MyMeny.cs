@@ -2,8 +2,14 @@
 
 namespace z23
 {
+    enum TypeTag
+    {
+        None,Menu,Code
+    }
+
     class MyMeny
     {
+        public TypeTag TypeTag { get; set; }
         public bool IsOpenTopTag { get; set; }
         public bool isOpenBody { get; set; }
         public StringBuilder ATributesBuilder { get; set; } = new StringBuilder();
