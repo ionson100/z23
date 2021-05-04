@@ -10,76 +10,73 @@ namespace z23
 {
     class Program
     {
-        private static bool block;
-        static StringBuilder bodybuilder = new StringBuilder();
-        private static Stack<MyMeny> stack = new Stack<MyMeny>();
-
+        private static bool _block;
+        static readonly StringBuilder Bodybuilder = new StringBuilder();
+        private static readonly Stack<MyTag> Stack = new Stack<MyTag>();
+        static readonly StringBuilder Word = new StringBuilder(); 
         static void Main(string[] args)
         {
-            StreamReader sr = new StreamReader("templateindex.xml");
-            StringBuilder word = new StringBuilder();
+            var preCompiler= Utils.PreCompiler("templateindex.xml");
+            Console.WriteLine(preCompiler);
+            Console.WriteLine("***************precompiler*******************");
+           
             bool w = false;
-            while (!sr.EndOfStream)
+            for (int ir = 0; ir < preCompiler.Length; ir++)
             {
-                char c = (char)sr.Read();
-                bodybuilder.Append(c);
+                char c = preCompiler[ir];
+                Bodybuilder.Append(c);
                
                 if (c == '<')
                 {
-                    word.Clear();
+                    Word.Clear();
                     w = true;
                 }
 
                 if (w)
                 {
-                    word.Append(c);
+                    Word.Append(c);
                 }
 
-                if (stack.Any())
-                {
-                    if (stack.First().IsOpenTopTag)
-                    {
-                        stack.First().ATributesBuilder.Append(c);
-                    }
-
-                    if (stack.First().isOpenBody)
-                    {
-                        stack.First().BodyBuilder.Append(c);
-                    }
-                }
+                AddCharToBody(c);
                
+                string sddd = Bodybuilder.ToString();
+                string sdsd = Word.ToString();
 
                 switch (c)
                 {
+                       
                     case '>':
-                        {
-                            if (stack.Any() == false)
+                    {
+
+                       
+                        
+                            if (Stack.Any() == false)
                             {
                                 break;
                             }
-                            MyMeny m = stack.First();
+                            MyTag m = Stack.First();
 
-                            if (bodybuilder[bodybuilder.Length - 1] != '/')
+                            if (Bodybuilder[Bodybuilder.Length - 1] != '/')
                             {
 
                                 if (m.IsOpenTopTag)
                                 {
                                     m.IsOpenTopTag = false;
-                                    m.isOpenBody = true;
+                                    m.IsOpenBody = true;
                                     w = false;
-                                    word.Length = 0;
+                                    Word.Length = 0;
                                     int y = m.ATributesBuilder.Length;
-                                    bodybuilder.Remove(bodybuilder.Length - y, y);
+                                    Bodybuilder.Remove(Bodybuilder.Length - y, y);
                                     m.ATributesBuilder.Remove(y - 1, 1);
                                     switch (m.TypeTag)
                                     {
                                         case TypeTag.None:
                                             break;
                                         case TypeTag.Menu:
-                                            bodybuilder.Append("menu***menu");
+                                            Bodybuilder.Append(m.GetOpenTag());
                                             break;
                                         case TypeTag.Code:
-                                            bodybuilder.Append("code***code");
+                                            Bodybuilder.Append(m.GetOpenTag());
                                             break;
                                         default:
                                             throw new ArgumentOutOfRangeException();
@@ -89,40 +86,50 @@ namespace z23
                                 }
                                 else
                                 {
-                                    string dd = word.ToString();
-                                    if (word.CompareWord("</menu>".ToCharArray()) && block==false) 
+                                    string dd = Word.ToString();
+                                    if (Word.CompareWord("</menu>".ToCharArray()) && _block==false) 
                                     {
-                                        bodybuilder.Remove(bodybuilder.Length - m.BodyBuilder.Length, m.BodyBuilder.Length);
-                                        string cc = bodybuilder.ToString();
-                                        m.BodyBuilder.Remove(m.BodyBuilder.Length - word.Length, word.Length);
+                                        Bodybuilder.Remove(Bodybuilder.Length - m.BodyBuilder.Length, m.BodyBuilder.Length);
+                                        string cc = Bodybuilder.ToString();
+                                        m.BodyBuilder.Remove(m.BodyBuilder.Length - Word.Length, Word.Length);
                                         string xx = m.BodyBuilder.ToString();
-                                        bodybuilder.Append(Environment.NewLine).Append("<diw>");
-                                        bodybuilder.Append(m.BodyBuilder).Append("</div>");
-                                        stack.Pop();
+                                        Bodybuilder.Append(Environment.NewLine).Append("<diw>");
+                                        Bodybuilder.Append(m.BodyBuilder).Append("</div>");
+                                        Stack.Pop();
                                     }
-                                    if (word.CompareWord("</codes>".ToCharArray()))
+
+                                    string sdd = Word.ToString();
+                                    if (Word.CompareWord("</codes>".ToCharArray()))
                                     {
-                                        bodybuilder.Remove(bodybuilder.Length - "</codes>".Length, "</codes>".Length);
-                                        bodybuilder.Append("**finishCode***");
-                                        stack.Pop();
-                                        block = false;
+                                        Bodybuilder.Remove(Bodybuilder.Length - "</codes>".Length, "</codes>".Length);
+                                        Bodybuilder.Append(m.GetCloseTag());
+                                        Stack.Pop();
+                                        _block = false;
                                     }
                                 }
 
                                 break;
                             }
 
-                            if (bodybuilder[bodybuilder.Length - 1] == '/')
+                            if (Bodybuilder[Bodybuilder.Length - 1] == '/')
                             {
                                 m.IsOpenTopTag = false;
-                                m.isOpenBody = true;
+                                m.IsOpenBody = true;
                                 w = false;
-                                word.Length = 0;
+                                Word.Length = 0;
                                 int y = m.ATributesBuilder.Length;
-                                bodybuilder.Remove(bodybuilder.Length - y, y);
+                                Bodybuilder.Remove(Bodybuilder.Length - y, y);
                                 m.ATributesBuilder.Remove(y - 1, 1);
-                                bodybuilder.Append("menu***menu");
-                                stack.Pop();
+                                string dd = Word.ToString();
+                                if (m.TypeTag == TypeTag.Menu)
+                                { 
+                                    Bodybuilder.Append(m.GetOpenTag());
+                                }
+                                if (m.TypeTag == TypeTag.Code)
+                                {
+                                    Bodybuilder.Append("assssasss");
+                                }
+                                Stack.Pop();
                             }
 
 
@@ -132,24 +139,36 @@ namespace z23
                     case ' ':
                         {
                             w = false;
-                            CheckWord(word);
+                            CheckWord(Word);
                             break;
                         }
                     case '\r':
                         {
                             w = false;
-                            CheckWord(word);
+                            CheckWord(Word);
                             break;
                         }
                 }
 
             }
-            Console.WriteLine(bodybuilder);
-            Console.WriteLine("******************attribute********************");
-            // Console.WriteLine(stack.First()?.ATributesBuilder);
-            Console.WriteLine("******************body********************");
-            // Console.WriteLine(stack.First()?.BodyBuilder);
+            Console.WriteLine(Bodybuilder);
             Console.ReadKey();
+        }
+
+        private static void AddCharToBody(char c)
+        {
+            if (Stack.Any())
+            {
+                if (Stack.First().IsOpenTopTag)
+                {
+                    Stack.First().ATributesBuilder.Append(c);
+                }
+
+                if (Stack.First().IsOpenBody)
+                {
+                    Stack.First().BodyBuilder.Append(c);
+                }
+            }
         }
 
         static void CheckWord(StringBuilder word)
@@ -158,173 +177,54 @@ namespace z23
             {
                 return;
             }
-            if (word.CompareWord("<menu".ToCharArray()) && block == false)
+            if (word.CompareWord("<menu".ToCharArray()) && _block == false)
             {
-                MyMeny meny = new MyMeny();
-                meny.TypeTag = TypeTag.Menu;
-                meny.IsOpenTopTag = true;
-                //meny.ATributesBuilder.Append(" <menu ");
-                stack.Push(meny);
-                int r = bodybuilder.Length;
+                MyTag tag = new MyTag();
+                tag.TypeTag = TypeTag.Menu;
+                tag.IsOpenTopTag = true;
+                //tag.ATributesBuilder.Append(" <menu ");
+                Stack.Push(tag);
+                int r = Bodybuilder.Length;
                 int y = word.Length;
-                bodybuilder.Remove(r - y, y);
+                Bodybuilder.Remove(r - y, y);
                 word.Clear();
             }
 
             if (word.CompareWord("<codes".ToCharArray()))
             {
               
-                MyMeny meny = new MyMeny();
-                meny.TypeTag = TypeTag.Code;
-                meny.IsOpenTopTag = true;
-                //meny.ATributesBuilder.Append(" <menu ");
-                stack.Push(meny);
-                int r = bodybuilder.Length;
+                MyTag tag = new MyTag();
+                tag.TypeTag = TypeTag.Code;
+                tag.IsOpenTopTag = true;
+                //tag.ATributesBuilder.Append(" <menu ");
+                Stack.Push(tag);
+                int r = Bodybuilder.Length;
                 int y = word.Length;
-                bodybuilder.Remove(r - y, y);
+                Bodybuilder.Remove(r - y, y);
                 word.Clear(); 
-                block = true;
+                _block = true;
             }
-            
 
-
-
-
-
-        }
-
-        private static void NewMethod()
-        {
-            StreamReader sr = new StreamReader("templateindex.xml");
-            while (!sr.EndOfStream)
+            if (word.CompareWord("<codes/>".ToCharArray()))
             {
-                char c = (char)sr.Read();
-                bodybuilder.Append(c);
-                switch (c)
-                {
-                    case '<':
-                        {
-                            int f = bodybuilder.Length - 1;
-                            if ((f) >= 0)
-                            {
-                                if (bodybuilder[f - 1] == '\n')
-                                {
-                                    bodybuilder.Replace(Environment.NewLine, " ", f - 1, 2);
-                                }
-                                else if (bodybuilder[f - 1] != ' ')
-                                {
-                                    string sddd = bodybuilder[f].ToString();
-                                    bodybuilder.Insert(f, $"{Environment.NewLine} ");
-                                }
-                            }
-
-                            break;
-                        }
-                    case '>':
-                        {
-                            while (true)
-                            {
-                                int f = bodybuilder.Length - 2;
-                                if ((f) >= 0)
-                                {
-                                    if (bodybuilder[f] == '\n')
-                                    {
-                                        string sddd = bodybuilder[f].ToString();
-                                        bodybuilder.Replace(Environment.NewLine, " ", f - 1, 2);
-                                    }
-                                    else if (bodybuilder[f] == ' ')
-                                    {
-                                        string sddd = bodybuilder[f].ToString();
-                                        bodybuilder.Remove(f, 1);
-                                    }
-                                    else
-                                    {
-                                        break;
-                                    }
-                                }
-                                else
-                                {
-                                    break;
-                                }
-                            }
-
-                            break;
-                        }
-                    case '\r':
-                        {
-                            break;
-                        }
-                    case '\n':
-                        {
-                            break;
-                        }
-                    default:
-                        {
-                            int f = bodybuilder.Length - 2;
-                            if ((f) >= 0)
-                            {
-                                string sss = bodybuilder.ToString();
-
-                                string dddd = bodybuilder[f].ToString();
-                                if (bodybuilder[f] == '>')
-                                {
-                                    bodybuilder.Insert(f + 1, $"{Environment.NewLine} ");
-                                }
-                            }
-
-                            break;
-                        }
-                }
+                var st = Stack.First();
+                MyTag tag = new MyTag();
+                tag.TypeTag = TypeTag.Code;
+                tag.IsOpenTopTag = true;
+                //tag.ATributesBuilder.Append(" <menu ");
+                Stack.Push(tag);
+                int r = Bodybuilder.Length;
+                int y = word.Length;
+                Bodybuilder.Remove(r - y, y);
+                word.Clear();
+                _block = true;
             }
 
-            Console.WriteLine(bodybuilder);
-            Console.ReadKey();
-        }
-
-        private static void CheckWord()
-        {
-            Console.WriteLine("*****  " + bodybuilder.GetWord());
-        }
-    }
 
 
-    static class Helper
-    {
-        private static StringBuilder Builder = new StringBuilder();
-        public static StringBuilder GetWord(this StringBuilder builder)
-        {
-            for (int i = builder.Length - 2; i >= 0; i--)
-            {
-                if (builder[i] == ' ')
-                {
-                    return Builder;
-                }
 
-                Builder.Append(builder[i]);
-            }
 
-            return Builder;
 
-        }
-
-        public static bool CompareWord(this StringBuilder builder, char[] word)
-        {
-            if (builder.Length == 0) return false;
-            if (builder.Length < word.Length) return false;
-            bool result = false;
-            for (var i = 0; i < word.Length; i++)
-            {
-                if (builder[i] == word[i])
-                {
-                    result = true;
-                }
-                else
-                {
-                    result = false;
-                }
-            }
-
-            return result;
         }
 
     }
