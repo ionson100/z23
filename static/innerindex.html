@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>My Help</title>
+    <link rel="stylesheet" href="static/bootstrap.css">
+    <link rel="stylesheet" href="static/main.css">
+    <link rel="stylesheet" href="static/main2.css">
+    <link href="static/prism.css" rel="stylesheet" />
+</head>
+<body>
+    <script src="static/prism.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.4/components/prism-json.min.js"></script>
+    <div id="sidebar" data-target=".navbar" class="sidenav">
+        <div class="navbar-fixed-top">
+            <button type="button" id="sidebarCollapse" class="btn btn-info navbar-static-top">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up-left-circle" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-5.904 2.803a.5.5 0 1 0 .707-.707L6.707 6h2.768a.5.5 0 1 0 0-1H5.5a.5.5 0 0 0-.5.5v3.975a.5.5 0 0 0 1 0V6.707l4.096 4.096z"></path>
+                </svg>
+                menu
+            </button>
+        </div>
+        <div class="sidebar-header">
+            <h3>My Help</h3>
+        </div>
+        <ul class="list-unstyled components">
+
+            ###menu###
+        </ul>
+
+    </div>
+    <!-- Page content -->
+    <div id="main" class="main">
+
+        ###body###
+
+
+        <!-- jQuery CDN -->
+        <script src="static/jquery-1.js"></script>
+        <!-- Bootstrap Js CDN -->
+        <script src="static/bootstrap.js"></script>
+
+        <script type="text/javascript">
+            var e = true;
+            $(document).ready(function () {
+                $.getScript('https://cdnjs.cloudflare.com/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js',
+                    function () {
+                        $('#main .img-responsive').lazyload({});
+                    });
+                $('#sidebarCollapse').on('click',
+                    function () {
+                        e = !e;
+                        $('#sidebar').toggleClass('active');
+                        if (e == false) {
+                            $('#main').css('margin-left', '50px');
+                        } else {
+                            $('#main').css('margin-left', '250px');
+                        }
+                    });
+            });
+        </script>
+    </div>
+</body>
+</html>

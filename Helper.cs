@@ -1,30 +1,18 @@
-﻿using System.Text;
+﻿using System.Linq;
+using System.Text;
 
 namespace z23
 {
     static class Helper
     {
-        private static StringBuilder Builder = new StringBuilder();
-        public static StringBuilder GetWord(this StringBuilder builder)
-        {
-            for (int i = builder.Length - 2; i >= 0; i--)
-            {
-                if (builder[i] == ' ')
-                {
-                    return Builder;
-                }
-
-                Builder.Append(builder[i]);
-            }
-
-            return Builder;
-
-        }
+        private static readonly char[] Deliter = new[] {'\r', '\n', '\t', ' '};
+        private static readonly StringBuilder Builder = new StringBuilder();
 
         public static bool CompareWord(this StringBuilder builder, char[] word)
         {
+            //string asa=builder.ToString();
             if (builder.Length == 0) return false;
-            if (builder.Length < word.Length) return false;
+            if (builder.Length != word.Length) return false;
             bool result = false;
             for (var i = 0; i < word.Length; i++)
             {
@@ -35,16 +23,38 @@ namespace z23
                 else
                 {
                     result = false;
+                    break;
                 }
             }
 
             return result;
         }
 
-        public static StringBuilder ToStringBuilder(this string str)
+        public static StringBuilder RemoveFromEnd(this StringBuilder builder, StringBuilder v)
         {
-            return Builder.Clear().Append(str);
+            int i = builder.Length, ii = v.Length;
+            return builder.Remove(i - ii, ii);
         }
 
+        public static StringBuilder RemoveFromEnd(this StringBuilder builder, string v)
+        {
+            int i = builder.Length, ii = v.Length;
+            return builder.Remove(i - ii, ii);
+        }
+
+        public static bool StartWitchOpenTag(this string s)
+        {
+            //var res = true;
+            foreach (var t in s)
+            {
+                if (Deliter.Contains(t)) continue;
+                if (t == '<')
+                {
+                    return true;
+                }
+                return false;
+            }
+            return true;
+        }
     }
 }
