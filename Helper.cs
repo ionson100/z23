@@ -6,8 +6,6 @@ namespace z23
     static class Helper
     {
         private static readonly char[] Deliter = new[] {'\r', '\n', '\t', ' '};
-        private static readonly StringBuilder Builder = new StringBuilder();
-
         public static bool CompareWord(this StringBuilder builder, char[] word)
         {
             //string asa=builder.ToString();
@@ -44,16 +42,15 @@ namespace z23
 
         public static bool StartWitchOpenTag(this string s)
         {
-            //var res = true;
-            foreach (var t in s)
+            foreach (var t in s.Where(t => !Deliter.Contains(t)))
             {
-                if (Deliter.Contains(t)) continue;
                 if (t == '<')
                 {
                     return true;
                 }
                 return false;
             }
+
             return true;
         }
     }

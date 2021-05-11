@@ -49,10 +49,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helper.cs" />
-    <Compile Include="Hlam.cs" />
     <Compile Include="MyMenu.cs" />
     <Compile Include="MyTag.cs" />
-    <Compile Include="Program2.cs" />
     <Compile Include="ResourceCore.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

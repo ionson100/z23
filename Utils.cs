@@ -68,7 +68,7 @@ namespace z23
                 
 
                
-                if (string.IsNullOrEmpty(d[i].Trim()) &&i<d.Length-1 &&string.IsNullOrEmpty(d[i + 1].Trim()))
+                if (i<d.Length-1 &&string.IsNullOrEmpty(d[i].Trim()) &&string.IsNullOrEmpty(d[i + 1].Trim()) && string.IsNullOrEmpty(d[i - 1].Trim()))
                 {
                     builder.AppendLine("#####");
                     continue;
