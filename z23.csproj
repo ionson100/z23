@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helper.cs" />
+    <Compile Include="JsonCommentConverter .cs" />
     <Compile Include="MyMenu.cs" />
     <Compile Include="MyTag.cs" />
     <Compile Include="ResourceCore.Designer.cs">

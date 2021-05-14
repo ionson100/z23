@@ -134,14 +134,21 @@ namespace z23 {
         ///    &lt;link href=&quot;static/prism.css&quot; rel=&quot;stylesheet&quot; /&gt;
         ///&lt;/head&gt;
         ///&lt;body&gt;
-        ///&lt;script src=&quot;static/prism.js&quot;&gt;&lt;/script&gt;
-        ///&lt;div id=&quot;sidebar&quot; data-target=&quot;.navbar&quot; class=&quot;sidenav&quot;&gt;
-        ///    &lt;div class=&quot;navbar-fixed-top&quot;&gt;
-        ///        &lt;butt [остаток строки не уместился]&quot;;.
+        ///    &lt;script src=&quot;static/prism.js&quot;&gt;&lt;/script&gt;
+        ///&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.4/components/prism-json.min.js&quot;&gt;&lt;/scrip [остаток строки не уместился]&quot;;.
         /// </summary>
         internal static string innerindex {
             get {
                 return ResourceManager.GetString("innerindex", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на .
+        /// </summary>
+        internal static string isHowHelpJson {
+            get {
+                return ResourceManager.GetString("isHowHelpJson", resourceCulture);
             }
         }
         
@@ -257,13 +264,14 @@ namespace z23 {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на [menu  Menu1]
-        ///Я помню чудное мгновенье
+        ///   Ищет локализованную строку, похожую на &lt;menu text=&quot;Я помню чудное мгновенье&quot; textmenu=&quot;Я помню &quot;/&gt;
+        /// Я помню чудное мгновенье
+        ///
         ///Передо мной явилась ты,
         ///Как мимолетное виденье,
         ///Как гений чистой красоты.
-        ///[menu Menu2] 
-        ///В томленьях грусти безнадежной
+        ///&lt;menu text=&quot;В томленьях&quot; /&gt;
+        /// В томленьях грусти безнадежной
         ///В тревогах шумной суеты,
         ///Звучал мне долго голос нежный
         ///И снились милые черты.
@@ -271,13 +279,10 @@ namespace z23 {
         ///Рассеял прежние мечты,
         ///И я забыл твой голос нежный,
         ///Твои небесные черты.
-        ///[menu Menu3]
+        ///&lt;menu text=&quot;Тянулись тихо&quot; /&gt;
         ///В глуши, во мраке заточенья
         ///Тянулись тихо дни мои
-        ///Без божества, без вдохновенья,
-        ///Без слез, без жизни, без любви.
-        ///Душе настало пробужденье:
-        ///И [остаток строки не уместился]&quot;;.
+        ///Без божества [остаток строки не уместился]&quot;;.
         /// </summary>
         internal static string templateindex {
             get {

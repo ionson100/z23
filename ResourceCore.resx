@@ -160,4 +160,7 @@
   <data name="error" xml:space="preserve">
     <value>Ошибка формирования разметки:Возможно нарушена партикулярность тегов.</value>
   </data>
+  <data name="isHowHelpJson" xml:space="preserve">
+    <value />
+  </data>
 </root>

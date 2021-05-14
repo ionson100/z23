@@ -14,12 +14,10 @@ namespace z23
         public static SettingsZ23 Z23;
         private const string Json = "settings.json";
 
-
         static readonly StringBuilder Bodybuilder = new StringBuilder();
         private static readonly Stack<MyTag> Stack = new Stack<MyTag>();
         private static readonly StringBuilder Word = new StringBuilder();
         private static bool _w;
-
 
         static void Main(string[] args)
         {
@@ -32,11 +30,12 @@ namespace z23
             {
                 Console.WriteLine(ResourceCore.error);
                 Console.WriteLine(e);
-                
             }
 
-
-            Console.ReadKey();
+            if (Z23.AutoClose == false)
+            {
+                Console.ReadKey();
+            }
         }
 
         private static string BodyCore()
@@ -61,6 +60,9 @@ namespace z23
                     Console.WriteLine(
                         $@"Ошибка создания пользовательскиз настроек из файла{Environment.NewLine}{e} {Environment.NewLine} Внимание! Компиляция с настройками по умолчанию.");
                 }
+
+                string json = JsonConvert.SerializeObject(Z23, Formatting.Indented);
+                File.WriteAllText(Json, json);
             }
 
             Utils.CheckFileStatic();
@@ -141,7 +143,7 @@ namespace z23
                     //string ass = Bodybuilder.ToString();
                     //string asas = m.BodyBuilder.ToString();
                     Bodybuilder.Replace(m.BodyBuilder.ToString(), "");
-                   
+
                     Bodybuilder.Append(m.GetBody());
                     Bodybuilder.Append(m.GetCloseTag());
                     string asss = Bodybuilder.ToString();
@@ -162,8 +164,7 @@ namespace z23
                         _w = false;
                         int y = m.ATributesBuilder.Length;
                         Bodybuilder.RemoveFromEnd(m.ATributesBuilder);
-                        if (y > 2)
-                            m.ATributesBuilder.Remove(y - 2, 2);
+                        if (y > 2) m.ATributesBuilder.Remove(y - 2, 2);
                         switch (m.TypeTag)
                         {
                             case TypeTag.None:
@@ -184,7 +185,6 @@ namespace z23
                             default:
                                 throw new ArgumentOutOfRangeException();
                         }
-
 
                         Stack.Pop();
 
@@ -227,9 +227,7 @@ namespace z23
                 }
             }
 
-
             Word.Clear();
-
 
             for (int i = 0; i < Bodybuilder.Length; i++)
             {
@@ -271,8 +269,7 @@ namespace z23
                 }
             }
 
-
-            string html = Word.Replace("#####",string.Empty).ToString();
+            string html = Word.Replace("#####", string.Empty).ToString();
 
             string bodyCore = ResourceCore.innerindex;
 
